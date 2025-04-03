@@ -1,0 +1,35 @@
+name: op-community-hub-scraper
+
+on:
+  schedule:
+    - cron: "0 4 * * *" # at 4:00 UTC
+  workflow_dispatch: # also manually
+
+jobs:
+  scrap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: npm install
+
+      - name: Run script
+        run: bash ./run.sh
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "📄 Daily uodate .md from community-hub" || echo "Nothing to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
