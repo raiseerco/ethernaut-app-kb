@@ -1,0 +1,31 @@
+name: op-community-hub-scraper
+
+on:
+  schedule:
+    - cron: "0 4 * * *" # at 4:00 UTC
+  workflow_dispatch: # also manually
+
+jobs:
+  scrap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: npm install
+
+      - name: Run script
+        run: bash ./run.sh
+
+      - name: Upload markdown files as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: markdown-output
+          path: chatpers/
