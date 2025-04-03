@@ -1,6 +1,6 @@
 #! /bin/bash
-rm -rf chatpers
-rm -rf repos/community-hub
+mkdir chatpers
+mkdir repos
 cd repos
 git clone https://github.com/ethereum-optimism/community-hub.git
 cd ..
