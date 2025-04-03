@@ -24,8 +24,15 @@ jobs:
       - name: Run script
         run: bash ./run.sh
 
-      - name: Upload markdown files as artifact
-        uses: actions/upload-artifact@v4
+      - name: Create ZIP with .md
+        run: |
+          zip -r markdown-output.zip chapters/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: markdown-output
-          path: chapters/
+          tag_name: daily
+          name: Daily Auto Release
+          files: markdown-output.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
