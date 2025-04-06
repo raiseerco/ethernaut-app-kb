@@ -1,8 +1,8 @@
 const fs = require("fs/promises");
 const path = require("path");
 
-const OUTPUT_DIR = "chapters";
-const OUTPUT_FILE = "master.md";
+const OUTPUT_DIR = "./output/chapters";
+const OUTPUT_FILE = "./output/master.md";
 
 const slugify = (str) =>
   str
