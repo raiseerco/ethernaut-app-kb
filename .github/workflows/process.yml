@@ -37,6 +37,8 @@ jobs:
         with:
           tag_name: daily
           name: Knowledge Base Daily Auto Release
-          files: kb.zip
+          files: |
+            kb.zip
+            output/last-update.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
