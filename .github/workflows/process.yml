@@ -24,6 +24,10 @@ jobs:
       - name: Run script
         run: bash ./run.sh
 
+      - name: Generate last update timestamp
+        run: |
+          echo "{\"last_update\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > output/last-update.json
+
       - name: Create ZIP with .md
         run: |
           zip -r kb.zip output/
@@ -36,6 +40,3 @@ jobs:
           files: kb.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate last update timestamp
-        run: |
-          echo "{\"last_update\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > output/last-update.json
