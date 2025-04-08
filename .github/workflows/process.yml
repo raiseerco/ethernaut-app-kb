@@ -26,13 +26,16 @@ jobs:
 
       - name: Create ZIP with .md
         run: |
-          zip -r markdown-output.zip output/
+          zip -r kb.zip output/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: daily
-          name: Daily Auto Release
-          files: markdown-output.zip
+          name: Knowledge Base Daily Auto Release
+          files: kb.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate last update timestamp
+        run: |
+          echo "{\"last_update\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > output/last-update.json
