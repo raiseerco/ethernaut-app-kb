@@ -2,8 +2,8 @@ const fs = require("fs/promises");
 const path = require("path");
 const { COMMON_WORDS } = require("./constants");
 
-const CHAPTERS_DIR = "./output/chapters";
-const OUTPUT_FILE = "./output/keywords.json";
+const CHAPTERS_DIR = process.argv[2]; //"output/chapters"
+const OUTPUT_FILE = process.argv[3]; //"output/keywords.json"
 
 const urlPatterns = [
   /^https?:\/\//i,

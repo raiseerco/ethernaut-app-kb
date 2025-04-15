@@ -2,11 +2,12 @@ const { glob } = require("glob");
 const fs = require("fs/promises");
 const path = require("path");
 const matter = require("gray-matter");
-const OUTPUT_FILENAME = "./output/master.md";
-const MDX_PATH = "repos/optimism/community-hub/pages/**/*.{md,mdx}";
 
-// Pages to exclude from the index
-const excludedPages = [
+const OUTPUT_FILENAME = process.argv[2]; // "output/master.md";
+const MDX_PATH = process.argv[3]; // "repos/optimism/community-hub";
+
+const MDX_FILTER = `${MDX_PATH}/pages/**/*.{md,mdx}`;
+const EXCLUDED_PAGES = [
   "400.mdx",
   "500.mdx",
   "index.mdx",
@@ -51,12 +52,12 @@ async function processFile(filePath) {
 async function generateIndex() {
   try {
     // Locate all MDX/MD files
-    const files = await glob(MDX_PATH);
+    const files = await glob(MDX_FILTER);
 
     // Filter out excluded files
     const validFiles = files.filter(
       (file) =>
-        !excludedPages.includes(path.basename(file)) &&
+        !EXCLUDED_PAGES.includes(path.basename(file)) &&
         !path.basename(file).startsWith("_")
     );
 

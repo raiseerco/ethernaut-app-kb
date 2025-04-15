@@ -26,11 +26,12 @@ jobs:
 
       - name: Create ZIP with .md
         run: |
-          zip -r kb.zip output/
+          zip -r kb.zip output/optimism
 
       - name: Generate last update commit
         run: |
-          echo "{\"last_commit\": \"$(git ls-remote https://github.com/ethereum-optimism/community-hub.git refs/heads/main | cut -f1)\"}" > output/last-update.json
+          echo "{\"last_commit\": \"$(git ls-remote https://github.com/ethereum-optimism/community-hub.git refs/heads/main | cut -f1)\"}" > output/optimism/last-update-hub.json
+          echo "{\"last_commit\": \"$(git ls-remote https://github.com/ethereum-optimism/docs.git refs/heads/main | cut -f1)\"}" > output/optimism/last-update-docs.json
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -39,6 +40,7 @@ jobs:
           name: Knowledge Base Daily Auto Release
           files: |
             kb.zip
-            output/last-update.json
+            output/optimism/last-update-hub.json
+            output/optimism/last-update-docs.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
