@@ -1,8 +1,8 @@
 const fs = require("fs/promises");
 const path = require("path");
 
-const OUTPUT_DIR = "./output/chapters";
-const OUTPUT_FILE = "./output/master.md";
+const TOC_DIR = process.argv[2]; //  "output/chapters"
+const OUTPUT_FILE = process.argv[3]; // "output/master.md"
 
 const slugify = (str) =>
   str
@@ -40,19 +40,27 @@ const parseHierarchy = (tocLines) => {
   const hierarchy = {};
   const parents = {};
 
+  // console.log("Processing TOC lines:", tocLines);
+
   for (const line of tocLines) {
+    // console.log("Processing line:", line);
     const indent = line.match(/^\s*/)[0].length / 2;
+    // console.log("Indent level:", indent);
     const [, title] = line.match(/\[(.+?)\]/);
+    // console.log("Title:", title);
     const [, anchor] = line.match(/\(#(.+?)\)/);
+    // console.log("Anchor:", anchor);
 
     if (indent === 0) {
       hierarchy[title] = { anchor, children: [] };
       parents[0] = { title, anchor };
     } else {
       const parent = parents[indent - 1];
-      if (parent) {
+      // console.log("Parent for indent", indent, ":", parent);
+      if (parent && hierarchy[parent.title]) {
         hierarchy[parent.title].children.push({ title, anchor });
       } else {
+        // If parent doesn't exist in hierarchy, create it as a root item
         hierarchy[title] = { anchor, children: [] };
       }
       parents[indent] = { title, anchor };
@@ -67,7 +75,7 @@ const splitIndex = async () => {
     const content = await fs.readFile(OUTPUT_FILE, "utf-8");
     const sections = content.split("---\n\n").filter(Boolean);
 
-    await fs.mkdir(OUTPUT_DIR).catch((err) => {
+    await fs.mkdir(TOC_DIR).catch((err) => {
       if (err.code !== "EEXIST") throw err;
     });
 
@@ -77,7 +85,7 @@ const splitIndex = async () => {
       .filter((line) => line.trim().startsWith("-"));
 
     const hierarchy = parseHierarchy(tocLines);
-    await generateTOC(hierarchy, OUTPUT_DIR);
+    await generateTOC(hierarchy, TOC_DIR);
 
     const processed = new Set();
     let index = 0;
@@ -107,7 +115,7 @@ const splitIndex = async () => {
       const filename = `${String(index++).padStart(3, "0")}-${slugify(
         parent
       )}.md`;
-      await writeFile(OUTPUT_DIR, filename, content);
+      await writeFile(TOC_DIR, filename, content);
       processed.add(parent);
     }
 
@@ -127,7 +135,7 @@ const splitIndex = async () => {
         const filename = `${String(index++).padStart(3, "0")}-${slugify(
           title
         )}.md`;
-        await writeFile(OUTPUT_DIR, filename, section.trim());
+        await writeFile(TOC_DIR, filename, section.trim());
       }
     }
 
